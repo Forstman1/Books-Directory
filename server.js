@@ -17,28 +17,38 @@ app.use(express.json())
 app.use(express.urlencoded( { extended: true}))
 
 app.get('/', (req, res) => {
-    // connection.query('SHOW DATABSE', function(error, results, fields){
-    //     if (error)
-    //         throw error;
-    // })
-    res.send("GET DATA")
+    const { book } = '*';
+    if (book)
+    {
+        connection.query(`SELECT * FROM BOOKSHELF`, (err, result, fields) => {
+            if (err)
+                console.log("mal9ithach")
+            else
+                res.send(result)
+        })
+    }
 })
 
 app.post('/', (req, res) => {
-    const { name } = req.body;
-    if (name)
+    const { book } = req.body;
+    if (book)
     {
         try {
-            connection.query(`INSERT INTO BOOKSHELF VALUES('${name}')`)
+            connection.query(`INSERT INTO BOOKSHELF VALUES('${book}')`);
         }
         catch (err){
-            console.log(name)
-
         }
     }
-    res.send("GET DATA")
+    res.send(book)
 });
 
+app.delete('/', (req, res) => {
+    const { book } = req.body;
+    if (book)
+    {
+        connection.query(`DELETE '${book}' FROM BOOKSHELF`)
+    }
+})
 
 
 app.listen(3306, () =>{
