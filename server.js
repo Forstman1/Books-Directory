@@ -1,13 +1,13 @@
 const mysql = require('mysql')
 
-// const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'sami',
-//     password: 'secret',
-//     database: 'my_db'
-// })
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'books',
+})
 
-// connection.connect()
+connection.connect()
 
 
 const express = require('express')
@@ -25,16 +25,22 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-    const { book, hello } = req.body;
-    if (book && hello)
-        console.log(book, hello)
-    else
-        console.log(book, hello)
+    const { name } = req.body;
+    if (name)
+    {
+        try {
+            connection.query(`INSERT INTO BOOKSHELF VALUES('${name}')`)
+        }
+        catch (err){
+            console.log(name)
+
+        }
+    }
     res.send("GET DATA")
 });
 
 
 
-app.listen(3006, () =>{
+app.listen(3306, () =>{
     console.log('server is running on Port 2000')
 })
