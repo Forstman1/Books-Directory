@@ -17,16 +17,22 @@ app.use(express.json())
 app.use(express.urlencoded( { extended: true}))
 
 app.get('/', (req, res) => {
-    const { book } = '*';
+    const { book } = req.body;
+    let results = [];
     if (book)
     {
-        connection.query(`SELECT * FROM BOOKSHELF`, (err, result, fields) => {
-            if (err)
-                console.log("mal9ithach")
+        connection.query(`SELECT * FROM BOOKSHELF WHERE name LIKE '${book}'`, (error, result) => {
+            if (error)
+                res.end();
             else
-                res.send(result)
+            {
+                console.log(result)
+                // res.send("stuff")
+            }
         })
     }
+    // console.log(results)
+    res.end();
 })
 
 app.post('/', (req, res) => {
@@ -34,7 +40,7 @@ app.post('/', (req, res) => {
     if (book)
     {
         try {
-            connection.query(`INSERT INTO BOOKSHELF VALUES('${book}')`);
+            connection.query(`INSERT INTO BOOKSHELF (name) VALUES('${book}')`);
         }
         catch (err){
         }
@@ -51,6 +57,6 @@ app.delete('/', (req, res) => {
 })
 
 
-app.listen(3306, () =>{
+app.listen(3006, () =>{
     console.log('server is running on Port 2000')
 })
