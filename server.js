@@ -18,20 +18,15 @@ app.use(express.urlencoded( { extended: true}))
 
 app.get('/', (req, res) => {
     const { book } = req.body;
-    let results = [];
     if (book)
     {
         connection.query(`SELECT * FROM BOOKSHELF WHERE name LIKE '${book}'`, (error, result) => {
-            if (error)
-                res.end();
-            else
-            {
-                console.log(result)
-                // res.send("stuff")
-            }
+        if (error)
+            res.end();
+        else
+            console.log(result)
         })
     }
-    // console.log(results)
     res.end();
 })
 
@@ -41,6 +36,7 @@ app.post('/', (req, res) => {
     {
         try {
             connection.query(`INSERT INTO BOOKSHELF (name) VALUES('${book}')`);
+            console.log("Data Inseted")
         }
         catch (err){
         }
@@ -52,11 +48,30 @@ app.delete('/', (req, res) => {
     const { book } = req.body;
     if (book)
     {
-        connection.query(`DELETE '${book}' FROM BOOKSHELF`)
+        try {
+            connection.query(`DELETE FROM BOOKSHELF WHERE name = '${book}'`)
+            console.log("Data Deleted")
+        }
+        catch (err){
+        }
     }
+    res.send(book)
 })
 
+app.patch('/', (req, res) => {
+    const { book } = req.body;
+    if (book)
+    {
+        try {
+            connection.query(`UPDATE BOOKSHELF SET name = '${book}' WHERE id = 1`);
+            console.log("Data updated")
+        }
+        catch (err){
+        }
+    }
+    res.send(book)
+})
 
-app.listen(3006, () =>{
+app.listen(3306, () =>{
     console.log('server is running on Port 2000')
 })
