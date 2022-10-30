@@ -16,16 +16,39 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded( { extended: true}))
 
+let AddNewBook = (book) => {
+    connection.query(`INSERT INTO BOOKSHELF (name) VALUES('${book}')`);
+    console.log("Data Inseted")
+}
+
+let GetBook = (book) => {
+    connection.query(`SELECT * FROM BOOKSHELF WHERE name LIKE '${book}'`, (err, result) => {
+        console.log(result)
+    });
+}
+
+let DeleteBook = (book) => {
+    connection.query(`DELETE FROM BOOKSHELF WHERE name = '${book}'`)
+    console.log("Data Deleted")
+}
+
+let UpdateBook = (book) => {
+    connection.query(`UPDATE BOOKSHELF SET name = '${book}' WHERE id = 2`);
+    console.log("Data updated")
+}
+
 app.get('/', (req, res) => {
     const { book } = req.body;
     if (book)
     {
-        connection.query(`SELECT * FROM BOOKSHELF WHERE name LIKE '${book}'`, (error, result) => {
-        if (error)
+        try {
+            GetBook(book);
+        }
+        catch (err)
+        {
+            console.log("ana ha")
             res.end();
-        else
-            console.log(result)
-        })
+        }
     }
     res.end();
 })
@@ -35,10 +58,10 @@ app.post('/', (req, res) => {
     if (book)
     {
         try {
-            connection.query(`INSERT INTO BOOKSHELF (name) VALUES('${book}')`);
-            console.log("Data Inseted")
+            AddNewBook(book);
         }
         catch (err){
+            res.end();
         }
     }
     res.send(book)
@@ -49,8 +72,7 @@ app.delete('/', (req, res) => {
     if (book)
     {
         try {
-            connection.query(`DELETE FROM BOOKSHELF WHERE name = '${book}'`)
-            console.log("Data Deleted")
+            DeleteBook(book)
         }
         catch (err){
         }
@@ -63,8 +85,7 @@ app.patch('/', (req, res) => {
     if (book)
     {
         try {
-            connection.query(`UPDATE BOOKSHELF SET name = '${book}' WHERE id = 1`);
-            console.log("Data updated")
+            UpdateBook(book)
         }
         catch (err){
         }
